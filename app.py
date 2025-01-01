@@ -1,7 +1,10 @@
 import pickle
+import numpy as np 
 import pandas as pd
 import streamlit as st
+
 import gdown
+import os
 
 # Google Drive file IDs
 movie_dict_file_id = "1nFGT8JdaTCf0ZFr_-GZ7gEmtU0NqM8SP"
@@ -11,22 +14,31 @@ similarity_file_id = "1Z0Hb5HxvGavIyNHZ2tHSqojAPGueN7qu"
 movie_dict_file_path = "movie_dict.pkl"
 similarity_file_path = "similarity.pkl"
 
-# Download URLs
-movie_dict_url = f"https://drive.google.com/uc?id={movie_dict_file_id}"
-similarity_url = f"https://drive.google.com/uc?id={similarity_file_id}"
+# Function to download a file if not present
+def download_file(file_id, file_path):
+    if not os.path.exists(file_path):
+        print(f"Downloading {file_path}...")
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, file_path, quiet=False)
+    else:
+        print(f"{file_path} already exists.")
 
 # Download files
-gdown.download(movie_dict_url, movie_dict_file_path, quiet=False)
-gdown.download(similarity_url, similarity_file_path, quiet=False)
+download_file(movie_dict_file_id, movie_dict_file_path)
+download_file(similarity_file_id, similarity_file_path)
 
 # Load pickle files
 try:
-    movies_dict = pickle.load(open(movie_dict_file_path, 'rb'))
+    with open(movie_dict_file_path, 'rb') as f:
+        movies_dict = pickle.load(f)
     movies = pd.DataFrame(movies_dict)
-    similarity = pickle.load(open(similarity_file_path, 'rb'))
-    print("Data loaded successfully!")
+
+    with open(similarity_file_path, 'rb') as f:
+        similarity = pickle.load(f)
+    
+    print("Files loaded successfully!")
 except Exception as e:
-    print(f"Error loading data: {e}")
+    print(f"Error loading files: {e}")
 
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
