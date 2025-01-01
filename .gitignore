@@ -1,3 +1,5 @@
 venv/
 *.log
 data/
+similarity.pkl
+movie_dict.pkl
