@@ -3,19 +3,30 @@ import pandas as pd
 import streamlit as st
 import gdown
 
-# Google Drive file links
-movie_dict_url = "https://drive.google.com/uc?id=1nFGT8JdaTCf0ZFr_-GZ7gEmtU0NqM8SP"
-similarity_url = "https://drive.google.com/uc?id=1Z0Hb5HxvGavIyNHZ2tHSqojAPGueN7qu"
+# Google Drive file IDs
+movie_dict_file_id = "1nFGT8JdaTCf0ZFr_-GZ7gEmtU0NqM8SP"
+similarity_file_id = "1Z0Hb5HxvGavIyNHZ2tHSqojAPGueN7qu"
+
+# File paths
+movie_dict_file_path = "movie_dict.pkl"
+similarity_file_path = "similarity.pkl"
+
+# Download URLs
+movie_dict_url = f"https://drive.google.com/uc?id={movie_dict_file_id}"
+similarity_url = f"https://drive.google.com/uc?id={similarity_file_id}"
 
 # Download files
-gdown.download(movie_dict_url, 'movie_dict.pkl', quiet=False)
-gdown.download(similarity_url, 'similarity.pkl', quiet=False)
+gdown.download(movie_dict_url, movie_dict_file_path, quiet=False)
+gdown.download(similarity_url, similarity_file_path, quiet=False)
 
-# Load data
-movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
-movies = pd.DataFrame(movies_dict)
-similarity = pickle.load(open('similarity.pkl', 'rb'))
-
+# Load pickle files
+try:
+    movies_dict = pickle.load(open(movie_dict_file_path, 'rb'))
+    movies = pd.DataFrame(movies_dict)
+    similarity = pickle.load(open(similarity_file_path, 'rb'))
+    print("Data loaded successfully!")
+except Exception as e:
+    print(f"Error loading data: {e}")
 
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
