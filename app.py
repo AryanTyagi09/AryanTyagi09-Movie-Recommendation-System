@@ -1,11 +1,21 @@
 import pickle
 import pandas as pd
 import streamlit as st
+import gdown
 
-# Load movie data and similarity matrix
+# Google Drive file links
+movie_dict_url = "https://drive.google.com/uc?id=1nFGT8JdaTCf0ZFr_-GZ7gEmtU0NqM8SP"
+similarity_url = "https://drive.google.com/uc?id=1Z0Hb5HxvGavIyNHZ2tHSqojAPGueN7qu"
+
+# Download files
+gdown.download(movie_dict_url, 'movie_dict.pkl', quiet=False)
+gdown.download(similarity_url, 'similarity.pkl', quiet=False)
+
+# Load data
 movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
 similarity = pickle.load(open('similarity.pkl', 'rb'))
+
 
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
